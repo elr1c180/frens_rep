@@ -1,25 +1,41 @@
-import logo from './logo.svg';
+import { TonConnectButton, useTonConnectUI } from '@tonconnect/ui-react'; // Импортируем кнопку из библиотеки
 import './App.css';
+import React, { useEffect, useState } from 'react';
+import './TonConnectPage.css';
 
 function App() {
+  const [tonConnectUI] = useTonConnectUI(); // Хук для работы с TonConnect
+  const [isConnected, setIsConnected] = useState(false);
+
+  useEffect(() => {
+    // Проверяем подключение TonConnect
+    const unsubscribe = tonConnectUI.onStatusChange((walletInfo) => {
+      setIsConnected(!!walletInfo);
+    });
+
+    return () => unsubscribe();
+  }, [tonConnectUI]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
+    <div className="ton-connect-page">
+      <div className="content">
+        <img
+          src="https://via.placeholder.com/300"
+          alt="main"
+          className="main-image"
+        />
+        <p className="info-text">
+          To continue, you need to pay 0.2 TON.
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+        <div className="ton-button">
+          <center><TonConnectButton /></center>
+        </div>
+        {isConnected && (
+          <p className="connected-text">You are connected!</p>
+        )}
+      </div>
     </div>
   );
-}
+};
 
 export default App;
